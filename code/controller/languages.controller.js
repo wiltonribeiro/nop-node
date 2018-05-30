@@ -18,10 +18,26 @@ class LanguageController{
                 model: 'Word'
             }).exec((err, resul) => {
                 if (err) {resolve(err)}
-                else resolve(resul);
+                else {resolve(resul)};
             });
         }) 
     }
+
+    async getWordByLanguage(shortId,word){
+        var result;
+        await languages.findOne({languageShort:shortId}).select("wordsReference").exec(function (err, someValue) {
+            if (err) result = new Promise(resolve =>{resolve(err)})
+            else{            
+                if(someValue)
+                    result = words.findById(someValue.wordsReference,{words: {$elemMatch:{word: word}}}).select('-_id').exec()
+                else
+                    result = new Promise(resolve =>{resolve({message:'Language not exit',code:1})})
+            }
+        }) 
+
+        return result
+    } 
+    
 }
 
 module.exports = new LanguageController()

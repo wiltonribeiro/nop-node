@@ -1,23 +1,24 @@
-const wordController = require('./word.controller')
-
+//const wordController = require('./word.controller')
+const languageController = require('./languages.controller')
 
 class PhraseController{
-    etiquettePhrase(lang,phrase){
+
+    nop(lang,phrase){
         return new Promise((resolve,reject) =>{
             try {
-                var newPraseBlindfold = phrase
                 var badWordsFounded = []
-
+                var blindfoldPhrase = phrase
                 var phraseArray = phrase.split(' ')
                 var verify = 0
 
                 phraseArray.forEach(element => {
-                    wordController.getWordByLanguage(lang,element).then(result =>{
+                    languageController.getWordByLanguage(lang,element).then(result =>{
 
-                        if(result[0] != null){
-                            if(result[0].words[0] != null){
+                        if(result.words != null){ 
+                        
+                            if(result.words.length >= 1){
                                 badWordsFounded.push(element)
-                                newPraseBlindfold = newPraseBlindfold.replace(element,result[0].words[0].blindfold)                
+                                blindfoldPhrase = blindfoldPhrase.replace(element,result.words[0].blindfold)
                             }
     
                             verify++
@@ -27,12 +28,12 @@ class PhraseController{
                                     originalPhrase: phrase,
                                     badwords: badWordsFounded,
                                     changedPhraseBy:{
-                                        blindfold: newPraseBlindfold
+                                        blindfold: blindfoldPhrase
                                     }
                                 })   
                             }
-                        } else{
-                            resolve({message:'Language not found'})
+                        } else {
+                            resolve(result)    
                         }
                     })
                 });
