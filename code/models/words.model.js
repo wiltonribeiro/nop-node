@@ -10,7 +10,8 @@ const wordsSchema = new mongoose.Schema({
             },
             blindfold:{
                 type: String
-            }
+            },
+            _id:false
         }
     ],
     _id:{

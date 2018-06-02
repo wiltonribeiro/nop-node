@@ -4,20 +4,20 @@ class SuggestionRoute{
     applyRoute(server){
         server.get('/suggestion/:language', (req,resp,next) =>{
             controller.getSuggestionsByLanguage(req.params.language).then(result =>{
-                if(result[0])
-                    resp.json(result)
+                if(result[0].suggestionReference.length==0)
+                    resp.json({message:'Language not exit',code:1})
                 else
-                    resp.json({message:'No suggestion found'})
+                    resp.json(result)
                 return next()
             })
         })
 
         server.get('/suggestion/:language/:word', (req,resp,next) =>{
             controller.getSuggestionsByLanguageAndWord(req.params.language,req.params.word).then(result =>{
-                if(result[0])
-                    resp.json(result)
+                if(result[0].suggestionReference.length==0)
+                    resp.json({message:'Language or word not exit',code:2})
                 else
-                    resp.json({message:'No suggestion found'})
+                    resp.json(result)
                 return next()
             })
         })
@@ -30,12 +30,14 @@ class SuggestionRoute{
             })
         })
 
-        server.post('/vote', (req,resp,next) =>{
-            controller.voteSuggestionByWord(JSON.parse(req.body)).then(result =>{
-                console.log(result)
+        server.post('/vote', (req,resp,next) =>{            
+            controller.voteSuggestionByWord(JSON.parse(req.body)).then(async result =>{
+                if(result.votes+1 > 4){
+                    await controller.addWordToLanguage(result.language,result.word)
+                }
                 resp.json(result)
                 return next()
-            })
+            })            
         })
     }
 }

@@ -15,7 +15,10 @@ const languageSchema = new mongoose.Schema({
     wordsReference:{  
         type: { type: mongoose.Schema.Types.ObjectId, ref: 'Word' }
         
-    } 
+    },
+    suggestionReference:[{  
+        type: mongoose.Schema.Types.ObjectId, ref: 'Word',_id: false
+    }]
 })
 
 const Language = mongoose.model('Language',languageSchema,'languages')
