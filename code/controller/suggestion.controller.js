@@ -1,6 +1,8 @@
-const suggestion = require('../models/suggestion.model')
+const Suggestion = require('../models/suggestion.model')
 const languages = require('../models/language.model')
 const words = require('../models/words.model')
+
+const languageController = require("./languages.controller")
 
 class SuggestionController{
 
@@ -32,13 +34,17 @@ class SuggestionController{
     }
 
     async submitSuggestionByLanguage(body){
-        var response;
+        var responseSuggestion, responseWord;
         await this.getSuggestionsByLanguageAndWord(body.language,body.word).then(res =>{
-            response = res  
+            responseSuggestion = res  
         })
 
-        if(response[0].suggestionReference.length!=0){
-            return Promise.resolve({message:'already exist'})
+        await languageController.getWordByLanguage(body.language,body.word).then(res =>{
+            responseWord = res
+        })
+
+        if(responseSuggestion[0].suggestionReference.length!=0 || (responseWord.words != null && responseWord.words.length>=1)){
+            return Promise.resolve({message:'already exist',code:0})
         } else{
             const suggestion = new Suggestion(body)
             var suggestionId;
@@ -58,13 +64,13 @@ class SuggestionController{
         })
 
         if(response[0].suggestionReference.length!=0){
-            return suggestion.findOneAndUpdate({language:body.language,word:body.word},{$inc : {votes : 1} })
+            return Suggestion.findOneAndUpdate({language:body.language,word:body.word},{$inc : {votes : 1} })
         } else{
-            return Promise.resolve({message:'Suggestion was not found'})
+            return Promise.resolve({message:'Suggestion was not found',code:2})
         }
     }
 
-    async addWordToLanguage(lang,word){
+    async addWordToLanguage(lang,word,suggestionId){
         var reference;
 
         await languages.findOne({languageShort:lang}).select('wordsReference').then(result =>{
@@ -72,10 +78,9 @@ class SuggestionController{
         })
 
         let blindfold = '*'.repeat(word.length)
-        await words.findOneAndUpdate({_id:reference},{$push:{ words: {word:word,blindfold:blindfold}}}).then(result =>{
-            console.log(result)
-        })
+        await words.findOneAndUpdate({_id:reference},{$push:{ words: {word:word,blindfold:blindfold}}})
 
+        await languages.findOneAndUpdate({languageShort:lang},{$pull:{ suggestionReference: suggestionId  }}, { safe: true, upsert: true })
     }
 }
 
