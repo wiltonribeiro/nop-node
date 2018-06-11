@@ -10,7 +10,8 @@ const suggestionModel = new mongoose.Schema({
     votes:{
         type:Number,
         default: 0
-    }
+    },
+    __v: { type: Number, select: false}
 })
 
 const Suggestion = mongoose.model('Suggestion', suggestionModel)

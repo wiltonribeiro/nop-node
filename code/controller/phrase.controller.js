@@ -12,28 +12,23 @@ class PhraseController{
                 var verify = 0
 
                 phraseArray.forEach(element => {
-                    languageController.getWordByLanguage(lang,element).then(result =>{
-
-                        if(result.words != null){ 
-                        
+                    languageController.getWordByLanguage(lang,element).then(result =>{                        
+                        if(result.words != null){                         
                             if(result.words.length >= 1){
                                 badWordsFounded.push(element)
                                 blindfoldPhrase = blindfoldPhrase.replace(element,result.words[0].blindfold)
-                            }
-    
-                            verify++
-    
-                            if(verify===phraseArray.length){
-                                resolve({
-                                    originalPhrase: phrase,
-                                    badwords: badWordsFounded,
-                                    changedPhraseBy:{
-                                        blindfold: blindfoldPhrase
-                                    }
-                                })   
-                            }
-                        } else {
-                            resolve(result)    
+                            }                            
+                        }
+
+                        verify++                            
+                        if(verify===phraseArray.length){                        
+                            resolve({                                
+                                originalPhrase: phrase,
+                                badwords: badWordsFounded,
+                                changedPhraseBy:{
+                                    blindfold: blindfoldPhrase
+                                }
+                            })   
                         }
                     })
                 });

@@ -15,8 +15,10 @@ const wordsSchema = new mongoose.Schema({
         }
     ],
     _id:{
-        type: mongoose.Schema.Types.ObjectId
-    }
+        type: mongoose.Schema.Types.ObjectId,
+        auto: true
+    },
+    __v: { type: Number, select: false}
 })
 
 const Word = mongoose.model('Word',wordsSchema)

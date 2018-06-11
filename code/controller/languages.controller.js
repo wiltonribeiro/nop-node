@@ -4,7 +4,15 @@ const words = require('../models/words.model')
 class LanguageController{
 
     getLanguages(){
-        return languages.find({},{suggestionReference:0})
+        return new Promise(resolve => {
+            languages.find({},{suggestionReference:0}).populate({
+                path: 'wordsReference',
+                model: 'Word'
+            }).exec((err, resul) => {
+                if (err) {resolve(err)}
+                else {resolve(resul)};
+            });
+        }) 
     }
 
     getLanguageByShortId(shortId){

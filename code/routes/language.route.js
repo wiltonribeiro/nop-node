@@ -2,12 +2,13 @@ const controller = require('../controller/languages.controller')
 
 class WordsRoute{
     applyRoute(server){
-        server.get('/languages',(req,resp,next) =>{
+        server.get('/languages',(req,resp,next) =>{                        
             controller.getLanguages().then(result =>{
                 if(result.length>0){
                     result.forEach(element => {
-                        element.wordsReference = undefined 
+                        element._doc.wordsReference =  element._doc.wordsReference.words.length
                     });
+                    resp.statusCode = 200
                     resp.json(result)
                 } else 
                     resp.json({message:'error'})

@@ -1,6 +1,7 @@
 const restify = require('restify');
 const mongoose = require('mongoose');
 const environment = require('../general/environment');
+//const corsMiddleware = require('restify-cors-middleware');
 
 class Server{
 
@@ -19,13 +20,16 @@ class Server{
         return new Promise((resolve,reject) =>{
 
             try {
+
                 this.application = restify.createServer({
-                    name: 'Etiquette-API',
+                    name: 'NOW-API',
                     version: '1.0.0'
                 })
 
                 this.application.use(restify.plugins.queryParser())
-                this.application.use(restify.plugins.bodyParser())
+                this.application.use(restify.plugins.bodyParser())                                
+                
+               
 
                 //routes
                 routes.forEach(route => {
