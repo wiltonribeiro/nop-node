@@ -1,4 +1,5 @@
 const controller = require('../controller/languages.controller')
+const teste = require('../general/fillDataLanguages')
 
 class WordsRoute{
     applyRoute(server){
@@ -15,6 +16,13 @@ class WordsRoute{
                 return next()
             })
         })
+
+        // server.get('/languages/fill',(req,resp,next) =>{
+        //         teste.criar();
+        //         resp.json({message:'ok'})
+        //         return next()
+        // })
+
 
         server.get('/languages/:shortId',(req,resp,next) =>{
             controller.getLanguageByShortId(req.params.shortId).then(result =>{
@@ -46,10 +54,10 @@ class WordsRoute{
 
          server.get('/languages/:shortId/words/:word',(req,resp,next) =>{
             controller.getWordByLanguage(req.params.shortId,req.params.word).then(result =>{
-                if(result.words == null) 
-                    resp.json({message:'Language not exit',code:1})
-                else if(result.words.length<=0)
-                    resp.json({message:'Word not found',code: 2})
+                if(result==null)
+                    resp.json({message:'Language not exit',code: 1})
+                else if(result.words == null) 
+                    resp.json({message:'Word not exit',code:1})
                 else
                     resp.json(result)                
                 return next()

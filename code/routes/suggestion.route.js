@@ -41,6 +41,13 @@ class SuggestionRoute{
                 return next()
             })            
         })
+
+        // server.post('/addInitialWords', (req,resp,next) =>{            
+        //     controller.addInitialWords(JSON.parse(req.body)).then(async result =>{            
+        //         resp.json(result)
+        //         return next()
+        //     })                    
+        // })
     }
 }
 

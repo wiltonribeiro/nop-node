@@ -79,9 +79,30 @@ class SuggestionController{
 
         let blindfold = '*'.repeat(word.length)
         await words.findOneAndUpdate({_id:reference},{$push:{ words: {word:word,blindfold:blindfold}}})
-
         await languages.findOneAndUpdate({languageShort:lang},{$pull:{ suggestionReference: suggestionId  }}, { safe: true, upsert: true })
     }
+
+    // async addInitialWords(body) {        
+    //     return new Promise(async (resolve, reject) =>{        
+            
+    //         try {
+    //             var reference;
+    //             await languages.findOne({languageShort:body.lang}).select('wordsReference').then(result =>{
+    //                 reference = result.wordsReference
+    //             })
+
+    //             let bla = body.words;
+    //             bla.forEach(async word => {
+    //                 let blindfold = '*'.repeat(word.length);
+    //                 await words.findOneAndUpdate({_id:reference},{$push:{ words: {word:word,blindfold:blindfold}}})                
+    //             });
+                
+    //             resolve({message:reference})   
+    //         } catch (error) {
+    //             reject(error)
+    //         }
+    //     })
+    // }
 }
 
 module.exports = new SuggestionController()
